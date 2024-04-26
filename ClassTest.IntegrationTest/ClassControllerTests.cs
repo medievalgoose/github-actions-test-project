@@ -17,7 +17,7 @@ namespace ClassTest.IntegrationTest
         }
 
         [Fact]
-        public async Task GetClass_ValidRequest_ReturnClassList()
+        public async Task GetClasses_ValidRequest_ReturnClassList()
         {
             // Act
             var body = await _client.GetAsync("/api/Class");
@@ -26,6 +26,28 @@ namespace ClassTest.IntegrationTest
 
             // Assert
             result.First().ClassName.Should().Contain("Class 2");
+        }
+
+        [Fact]
+        public async Task GetClass_ValidId_ReturnRelevantClass()
+        {
+            // Arrange
+            Classe expectedClass = new()
+            {
+                Id = "70c0b14a-64db-47",
+                ClassName = "Class 1",
+                Participant = 5
+            };
+
+            string id = "70c0b14a-64db-47";
+
+            // Act
+            var body = await _client.GetAsync($"/api/Class/{id}");
+            var content = await body.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<Classe>(content);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedClass);
         }
     }
 }
